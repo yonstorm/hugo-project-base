@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  hugo-site-dev:
+    container_name: hugo_site_dev
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: ./.docker/Dockerfile.development
+      args:
+        hugo_version: "0.47"
+    expose:
+      - 3000
+    environment:
+      VIRTUAL_HOST: devops.local
+      VIRTUAL_PORT: 3000
+    volumes: 
+      - .:/opt:rw
+      - /opt/node_modules
+    command: ["npm", "run", "start-preview"]
+    user: ${CURRENT_UID}
+
+volumes:
+  node_modules:
+networks:
+  default:
+    external:
+      name: nginx-proxy
+
